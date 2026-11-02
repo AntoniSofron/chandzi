@@ -1,1 +1,29 @@
-window.CHANDZI = { characters: [{t:"學",s:"学",meaning:"discere; doctrina",pinyin:"xué",ko:"학",ja:"ガク",vi:"học",radical:"子",number:39,strokes:"16 / 8"},{t:"生",s:"生",meaning:"vita",pinyin:"shēng",ko:"생",ja:"セイ",vi:"sinh",radical:"生",number:100,strokes:"5"},{t:"漢",s:"汉",meaning:"Sinicus",pinyin:"hàn",ko:"한",ja:"カン",vi:"Hán",radical:"水",number:85,strokes:"14 / 5"},{t:"字",s:"字",meaning:"character scripturae",pinyin:"zì",ko:"자",ja:"ジ",vi:"tự",radical:"子",number:39,strokes:"6"}],words:[{t:"學生",s:"学生",meaning:"discipulus; studiosus",langs:{zh:"xuéshēng",ko:"학생 (haksaeng)",ja:"がくせい (gakusei)",vi:"học sinh"}},{t:"漢字",s:"汉字",meaning:"znaki Sinicuse",langs:{zh:"hànzì",ko:"한자 (hanja)",ja:"かんじ (kanji)",vi:"Hán tự"}}] };
+// Tabulae ex eodem libro publico quo Dictionarium Sanctae Marthae utitur.
+window.CHANDZI={words:[],characters:[],loaded:false,error:null};
+(async function(){
+ const url="https://docs.google.com/spreadsheets/d/e/2PACX-1vQZoAolAWEBzbwXjPzA67tmva1TyOR2AYB-49vqXPo98MXodomWq2dGKGewO_z8-iZIYbr0x6Z5jbPP/pub?output=xlsx";
+ const clean=v=>String(v??"").trim();
+ const normalize=r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[clean(k).toUpperCase(),clean(v)]));
+ const rows=(book,name)=>{
+  const sheet=book.Sheets[name];
+  if(!sheet)throw Error("Tabula non inventa: "+name);
+  return XLSX.utils.sheet_to_json(sheet,{defval:"",raw:false}).map(normalize);
+ };
+ try{
+  const response=await fetch(url,{cache:"no-store"});
+  if(!response.ok)throw Error("HTTP "+response.status);
+  const book=XLSX.read(new Uint8Array(await response.arrayBuffer()),{type:"array"});
+  const words=rows(book,"Lexicon vocabulorum").filter(r=>r["漢字"]).map(r=>({
+   t:r["漢字"],s:r["I"]||r["漢字"],meaning:r["I"]||"",
+   langs:{sl:r["SLA"]||undefined,ja:r["JAP"]||undefined,ko:r["COR"]||undefined,zh:r["SIN"]||undefined,vi:r["VIET"]||undefined}
+  }));
+  const characters=rows(book,"Lexicon characterum").filter(r=>r["漢字"]).map(r=>({
+   t:r["漢字"],s:r["I"]||r["漢字"],meaning:r["SLA"]||"",
+   sl:r["SLA"]||undefined,ja:r["JAP"]||undefined,ko:r["COR"]||undefined,
+   pinyin:r["SIN"]||undefined,vi:r["VIET"]||undefined,
+   radical:"",number:""
+  }));
+  CHANDZI.words=words;CHANDZI.characters=characters;CHANDZI.loaded=true;
+ }catch(e){CHANDZI.error=e.message;console.error("Chandzi: ",e)}
+ document.dispatchEvent(new Event("chandzi:loaded"));
+})();
