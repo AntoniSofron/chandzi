@@ -18,7 +18,7 @@ window.CHANDZI={words:[],characters:[],loaded:false,error:null};
    langs:{sl:r["SLA"]||undefined,ja:r["JAP"]||undefined,ko:r["COR"]||undefined,zh:r["SIN"]||undefined,vi:r["VIET"]||undefined}
   }));
   const characters=rows(book,"Lexicon characterum").filter(r=>r["漢字"]).map(r=>({
-   t:r["漢字"],s:r["I"]||r["漢字"],meaning:r["SLA"]||"",
+   t:r["漢字"],s:r["I"]||r["漢字"],meaning:"",
    sl:r["SLA"]||undefined,ja:r["JAP"]||undefined,ko:r["COR"]||undefined,
    pinyin:r["SIN"]||undefined,vi:r["VIET"]||undefined,
    radical:"",number:""
