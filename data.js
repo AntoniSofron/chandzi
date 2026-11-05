@@ -25,7 +25,7 @@ window.CHANDZI={words:[],characters:[],loaded:false,error:null};
    radical:r["I"]||"",number:""
   }));
   // Group all matching entries, even if they are separated in the sheet.
-  const canonical=v=>String(v??"").normalize("NFKC").trim().replace(/\\s+/g," ").toLocaleLowerCase();
+  const canonical=v=>String(v??"").normalize("NFKC").trim().replace(/\s+/g," ").toLocaleLowerCase();
   const merge=(entries,signature)=>{
    const groups=new Map(),out=[];
    for(const entry of entries){
