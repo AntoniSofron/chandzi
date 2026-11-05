@@ -24,18 +24,29 @@ window.CHANDZI={words:[],characters:[],loaded:false,error:null};
    pinyin:reading(r["SIN"]),vi:reading(r["VIET"]),
    radical:r["I"]||"",number:""
   }));
-  // Coniunge tantum ordines contiguos, quorum omnia praeter scripturam Hanzi eadem sunt.
-  const merged=[];
-  const signature=w=>JSON.stringify([w.meaning,...["sl","ja","ko","zh","vi"].map(k=>w.langs[k]??null)]);
-  for(const word of words){
-   const previous=merged[merged.length-1];
-   if(previous&&signature(previous)===signature(word)&&!previous.variants.includes(word.t)){
-    previous.variants.push(word.t);
-   }else{
-    merged.push({...word,variants:[word.t]});
+  // Group all matching entries, even if they are separated in the sheet.
+  const canonical=v=>String(v??"").normalize("NFKC").trim().replace(/\\s+/g," ").toLocaleLowerCase();
+  const merge=(entries,signature)=>{
+   const groups=new Map(),out=[];
+   for(const entry of entries){
+    const key=signature(entry);
+    const existing=groups.get(key);
+    if(existing){
+     if(!existing.variants.includes(entry.t)){
+      existing.variants.push(entry.t);
+      if(entry.radical!==undefined)existing.radicals.push(entry.radical);
+     }
+    }else{
+     const item={...entry,variants:[entry.t]};
+     if(entry.radical!==undefined)item.radicals=[entry.radical];
+     groups.set(key,item);out.push(item);
+    }
    }
-  }
-  CHANDZI.words=merged;CHANDZI.characters=characters;CHANDZI.loaded=true;
+   return out;
+  };
+  CHANDZI.words=merge(words,w=>JSON.stringify([canonical(w.meaning),...["sl","ja","ko","zh","vi"].map(k=>canonical(w.langs[k]))]));
+  CHANDZI.characters=merge(characters,c=>JSON.stringify([canonical(c.meaning),...["sl","ja","ko","pinyin","vi"].map(k=>canonical(c[k]))]));
+  CHANDZI.loaded=true;
  }catch(e){CHANDZI.error=e.message;console.error("Chandzi: ",e)}
  document.dispatchEvent(new Event("chandzi:loaded"));
 })();
