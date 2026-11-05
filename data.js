@@ -24,7 +24,18 @@ window.CHANDZI={words:[],characters:[],loaded:false,error:null};
    pinyin:reading(r["SIN"]),vi:reading(r["VIET"]),
    radical:r["I"]||"",number:""
   }));
-  CHANDZI.words=words;CHANDZI.characters=characters;CHANDZI.loaded=true;
+  // Coniunge tantum ordines contiguos, quorum omnia praeter scripturam Hanzi eadem sunt.
+  const merged=[];
+  const signature=w=>JSON.stringify([w.meaning,...["sl","ja","ko","zh","vi"].map(k=>w.langs[k]??null)]);
+  for(const word of words){
+   const previous=merged[merged.length-1];
+   if(previous&&signature(previous)===signature(word)&&!previous.variants.includes(word.t)){
+    previous.variants.push(word.t);
+   }else{
+    merged.push({...word,variants:[word.t]});
+   }
+  }
+  CHANDZI.words=merged;CHANDZI.characters=characters;CHANDZI.loaded=true;
  }catch(e){CHANDZI.error=e.message;console.error("Chandzi: ",e)}
  document.dispatchEvent(new Event("chandzi:loaded"));
 })();
