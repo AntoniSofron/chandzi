@@ -20,7 +20,7 @@ function show(c){
  const detail=$("#detail");
  function draw(){
  const radical=c.radicals?.[current(c)]??c.radical;
- detail.innerHTML='<article class="detail"><button class="back" id="back">← Ad indicem redi</button>'+picker(c)+(radical?'<p class="kangxi">康熙部首: '+hanziHTML(radical)+'</p>':'')+'<h2>'+esc(c.meaning)+'</h2><div class="grid">'+fields.map(([k,v])=>'<div class="field field-"+k.toLowerCase()+"><b>'+esc(k)+'</b>'+(v===null?'<span class="no">−</span>':esc(v??"Nondum exploratum"))+'</div>').join("")+'</div><h2>Exempla vocabulorum ex lexico</h2><div class="examples">'+(matches.length?matches.map(w=>'<a class="example" href="index.html?q='+encodeURIComponent(w.t)+'">'<span class="example-hanzi" lang="ko">'+hanziHTML(w.t)+'</span> · '+esc(w.meaning)+'</a>').join(""):'<p>Nulla vocabula hunc characterem continent in lexico praesenti.</p>')+'</div></article>';
+ detail.innerHTML='<article class="detail"><button class="back" id="back">← Ad indicem redi</button>'+picker(c)+(radical?'<p class="kangxi">康熙部首: '+hanziHTML(radical)+'</p>':'')+'<h2>'+esc(c.meaning)+'</h2><div class="grid">'+fields.map(([k,v])=>'<div class="field field-"+k.toLowerCase()+"><b>'+esc(k)+'</b>'+(v===null?'<span class="no">−</span>':esc(v??"Nondum exploratum"))+'</div>').join("")+'</div><h2>Exempla vocabulorum ex lexico</h2><div class="examples">'+(matches.length?matches.map(w=>'<a class="example" href="index.html?q='+encodeURIComponent(w.t)+'"><span class="example-hanzi" lang="ko">'+hanziHTML(w.t)+'</span> · '+esc(w.meaning)+'</a>').join(""):'<p>Nulla vocabula hunc characterem continent in lexico praesenti.</p>')+'</div></article>';
  $("#back").onclick=()=>detail.innerHTML="";
  bindPicker(detail,c,()=>{draw();render()});
  }
