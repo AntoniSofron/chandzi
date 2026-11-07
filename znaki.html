@@ -35,7 +35,7 @@ function render(){
  $("#heading").textContent=q?"Quaesita inventa":"Characteres perlustra";
  list.forEach(c=>{
   const b=document.createElement("div");b.className="card character-card";b.tabIndex=0;b.setAttribute("role","button");
-  function draw(){b.innerHTML=picker(c)+'<b>'+esc(c.meaning).replace(/†(?:\s|&nbsp;|&#160;)+([^\s<]+)/g,'<span class="dagger-term">†&nbsp;$1</span>')+'</b><p>'+esc(c.sl??"")+'</p>';bindPicker(b,c,()=>{draw();const d=$("#detail");if(d.querySelector(".detail .variant-picker")){const g=d.querySelector(".variant-picker .glyph");if(g)g.innerHTML=hanziHTML(variantsOf(c)[current(c)])}})}
+  function draw(){b.innerHTML=picker(c)+'<b>'+esc(c.meaning).replace(/†(?:\s|&nbsp;|&#160;)+([^\s<]+)/g,'<span class="dagger-term">†&nbsp;$1</span>')+'</b><p>'+esc(c.sl??"")+'</p>';bindPicker(b,c,()=>{draw();const d=$("#detail");if(d.querySelector(".detail .variant-picker")){const g=d.querySelector(".variant-picker .glyph");if(g)g.innerHTML=hanziHTML(variantsOf(c)[current(c)])}fitCardGlyphs()})}
   b.onclick=e=>{if(!e.target.closest(".variant-arrow"))show(c)};
   b.onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&e.target===b){e.preventDefault();show(c)}};
   draw();$("#cards").append(b);
