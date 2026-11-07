@@ -39,6 +39,7 @@ function render(){
   b.onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&e.target===b){e.preventDefault();show(w)}};
   draw();$("#cards").append(b);
  });
+ fitCardGlyphs();
 }
 function showWithoutScroll(w){const detail=$("#detail");if(!detail.querySelector(".detail"))return;const active=detail.querySelector(".variant-picker .glyph");if(active){active.innerHTML=hanziHTML(variantsOf(w)[currentVariant(w)]);const count=detail.querySelector(".variant-count");if(count)count.textContent=(currentVariant(w)+1)+" / "+variantsOf(w).length}}
 const initial=new URLSearchParams(location.search).get("q");if(initial)$("#q").value=initial;window.addEventListener("resize",fitCardGlyphs);if(document.fonts)document.fonts.ready.then(fitCardGlyphs);render();document.addEventListener("chandzi:loaded",()=>{items=CHANDZI.words;render();if(CHANDZI.error)$("#empty").textContent="Tabulae ex Google Sheets legi non potuerunt.";});</script></body></html>
